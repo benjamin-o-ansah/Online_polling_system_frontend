@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from "./useRedux";
-import { clearAuth, setTokens, setUser } from "../store/slices/authSlice";
-import { useLoginMutation, useLogoutMutation, useMeQuery } from "../store/api/authApi";
+import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
+import { setTokens, setUser, clearAuth } from "@/store/slices/authSlice";
+import { useLazyMeQuery, useLoginMutation, useLogoutMutation } from "@/store/api/authApi";
 
 export function useAuth() {
   const dispatch = useAppDispatch();
@@ -8,12 +8,13 @@ export function useAuth() {
 
   const [loginMutation] = useLoginMutation();
   const [logoutMutation] = useLogoutMutation();
-  const { refetch: refetchMe } = useMeQuery(undefined, { skip: !auth.accessToken });
+  const [fetchMe] = useLazyMeQuery();
 
   const login = async (email: string, password: string) => {
     const tokens = await loginMutation({ email, password }).unwrap();
     dispatch(setTokens(tokens));
-    const user = await refetchMe().unwrap();
+
+    const user = await fetchMe().unwrap();
     dispatch(setUser(user));
     return user;
   };
@@ -28,8 +29,8 @@ export function useAuth() {
 
   return {
     ...auth,
+    isAuthenticated: Boolean(auth.accessToken),
     login,
     logout,
-    isAuthenticated: Boolean(auth.accessToken),
   };
 }

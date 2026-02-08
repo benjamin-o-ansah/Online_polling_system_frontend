@@ -1,7 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { User } from "@/types/models";
+import { clearStoredTokens, getStoredTokens, storeTokens } from "@/lib/tokenStorage";
 
-type Tokens = { access_token: string; refresh_token?: string };
+type TokensPayload = { access_token: string; refresh_token?: string };
 
 interface AuthState {
   accessToken: string | null;
@@ -9,9 +11,11 @@ interface AuthState {
   user: User | null;
 }
 
+const stored = getStoredTokens();
+
 const initialState: AuthState = {
-  accessToken: null,
-  refreshToken: null,
+  accessToken: stored.accessToken,
+  refreshToken: stored.refreshToken,
   user: null,
 };
 
@@ -19,15 +23,17 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setTokens(state, action: PayloadAction<Tokens>) {
+    setTokens(state, action: PayloadAction<TokensPayload>) {
       state.accessToken = action.payload.access_token;
       state.refreshToken = action.payload.refresh_token ?? null;
+      storeTokens(action.payload.access_token, action.payload.refresh_token ?? null);
     },
     setUser(state, action: PayloadAction<User | null>) {
       state.user = action.payload;
     },
     clearAuth() {
-      return initialState;
+      clearStoredTokens();
+      return { accessToken: null, refreshToken: null, user: null };
     },
   },
 });

@@ -1,10 +1,9 @@
-import {
-  createApi,
-  fetchBaseQuery,
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type {
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
-} from "@reduxjs/toolkit/query/react";
+} from "@reduxjs/toolkit/query";
 import type { RootState } from "@/store/store";
 import { clearAuth, setTokens } from "@/store/slices/authSlice";
 
@@ -28,8 +27,9 @@ const baseQueryWithReauth: BaseQueryFn<
   let result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
-    // try refresh once
-    const refreshPath = import.meta.env.VITE_API_AUTH_REFRESH || "/api/auth/refresh";
+    const refreshPath =
+      import.meta.env.VITE_API_AUTH_REFRESH || "/api/auth/refresh";
+
     const refreshResult = await rawBaseQuery(
       { url: refreshPath, method: "POST" },
       api,

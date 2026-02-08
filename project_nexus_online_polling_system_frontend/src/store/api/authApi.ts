@@ -13,13 +13,6 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    register: builder.mutation<any, LoginReq>({
-      query: (body) => ({
-        url: import.meta.env.VITE_API_AUTH_REGISTER || "/api/auth/register",
-        method: "POST",
-        body,
-      }),
-    }),
     me: builder.query<User, void>({
       query: () => import.meta.env.VITE_API_AUTH_ME || "/api/auth/me",
       providesTags: ["Me"],
@@ -35,7 +28,7 @@ export const authApi = baseApi.injectEndpoints({
 
 export const {
   useLoginMutation,
-  useRegisterMutation,
-  useMeQuery,
+  useLazyMeQuery,
   useLogoutMutation,
+  useMeQuery,
 } = authApi;
