@@ -13,8 +13,11 @@ import projectLogo from "@/assets/project-logo.png";
 const ROLE_CONFIG: Record<string, { label: string; description: string; apiRole: string; icon: typeof Users }> = {
   voter: { label: "Voter", description: "Vote on polls and view results", apiRole: "VOTER", icon: Users },
   "poll-admin": { label: "Poll Admin", description: "Create and manage polls", apiRole: "POLL_ADMIN", icon: Shield },
-  // "system-admin": { label: "System Admin", description: "Manage the entire platform", apiRole: "SYSTEM_ADMIN", icon: Settings },
+  "system-admin": { label: "System Admin", description: "Manage the entire platform", apiRole: "SYSTEM_ADMIN", icon: Shield },
 };
+
+// Only these roles are shown in the role selection UI
+const VISIBLE_ROLES = ["voter", "poll-admin"];
 
 function getPasswordStrength(pw: string): { label: string; color: string; width: string } {
   if (pw.length < 6) return { label: "Weak", color: "bg-destructive", width: "w-1/4" };
@@ -57,7 +60,8 @@ function RegisterRoleSelection() {
           </div>
 
           <div className="space-y-4">
-            {Object.entries(ROLE_CONFIG).map(([key, config]) => {
+            {VISIBLE_ROLES.map((key) => {
+              const config = ROLE_CONFIG[key];
               const Icon = config.icon;
               return (
                 <Link key={key} to={`/register/${key}`}>
