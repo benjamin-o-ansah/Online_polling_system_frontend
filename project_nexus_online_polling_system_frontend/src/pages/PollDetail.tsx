@@ -12,8 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Clock, Edit, XCircle, Trash2 } from "lucide-react";
-import PublishPollModal from "@/components/PublishPollModal";
-import ClosePollModal from "@/components/ClosePollModal";
+import PublishPollModal from "../components/PublishPollModal";
+import ClosePollModal from "../components/ClosePollModal";
 
 const statusColors: Record<string, string> = {
   active: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-700",

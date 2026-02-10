@@ -4,20 +4,20 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
+import { ThemeProvider } from "./components/ThemeProvider";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import AppLayout from "@/layouts/AppLayout";
-import Polls from "@/pages/Polls";
-import PollDetail from "@/pages/PollDetail";
-import CreatePoll from "@/pages/CreatePoll";
-import PollResults from "@/pages/PollResults";
-import VoteStatus from "@/pages/VoteStatus";
-import Profile from "@/pages/Profile";
-import AdminDashboard from "@/pages/AdminDashboard";
-import AuditLogs from "@/pages/AuditLogs";
-import NotFound from "@/pages/NotFound";
+import Polls from "./pages/Polls";
+import PollDetail from "./pages/PollDetail";
+import CreatePoll from "./pages/CreatePoll";
+import PollResults from "./pages/PollResults";
+import VoteStatus from "./pages/VoteStatus";
+import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/AdminDashboard";
+import AuditLogs from "./pages/AuditLogs";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
   defaultOptions: {

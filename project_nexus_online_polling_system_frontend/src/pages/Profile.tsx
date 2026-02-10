@@ -81,7 +81,7 @@ export default function Profile() {
           <Separator className="my-6" />
 
           <div className="flex items-center justify-between">
-            <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">GET /api/auth/me</code>
+            
             <Button variant="outline" onClick={handleLogout} className="text-destructive border-destructive/30 bg-destructive/5 hover:bg-destructive/10">
               <LogOut className="h-4 w-4 mr-2" />Log out
             </Button>
