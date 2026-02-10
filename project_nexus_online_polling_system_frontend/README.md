@@ -7,15 +7,15 @@
 **Use your preferred IDE**
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in the github repo.
-Github repo - https://github.com/benjamin-o-ansah/project-nexus-online_polling_system.git
+Github repo - https://github.com/benjamin-o-ansah/Online_polling_system_frontend.git
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/benjamin-o-ansah/project-nexus-online_polling_system.git)
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/benjamin-o-ansah/Online_polling_system_frontend.git)
 
 Follow these steps:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
-git clone https://github.com/benjamin-o-ansah/project-nexus-online_polling_system.git
+git clone https://github.com/benjamin-o-ansah/Online_polling_system_frontend.git
 
 # Step 2: Navigate to the project directory.
 cd project-nexus-online-online_polling_system
