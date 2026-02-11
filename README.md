@@ -55,9 +55,6 @@ This repository contains the **frontend application** responsible for the user i
 
 ## 📂 Project Structure
 
-
-
-
 ---
 
 ## 🔐 Authentication API Integration
@@ -83,6 +80,7 @@ This repository contains the **frontend application** responsible for the user i
 | DELETE | `/api/polls/{poll_id}` | Delete poll |
 | POST | `/api/polls/{poll_id}/publish` | Publish poll |
 | POST | `/api/polls/{poll_id}/close` | Close poll |
+| GET | `/api/polls/voter/closed` | List all closed polls with details for Voter |
 
 ---
 
@@ -100,6 +98,7 @@ This repository contains the **frontend application** responsible for the user i
 | Method | Endpoint | Description |
 |------|---------|------------|
 | GET | `/api/polls/{poll_id}/results` | View poll results |
+| GET | `/api/polls/closed` | View all closed poll results |
 
 > **Note:**  
 > - Admins can view results at any time  
