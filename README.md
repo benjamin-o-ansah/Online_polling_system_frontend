@@ -2,7 +2,7 @@
 
 # Important Note.
 
-## The backend is powered on render and it stays silent or sleeps when active. Because it is being utilised in the free mode, it takes time to come back up about 50 seconds or more so if you initiate a request in the beginning and it fails then you know the reason behind it delaying
+## The backend is powered on render and it stays silent or sleeps when not active. Because it is being utilised in the free mode, it takes time to come back up about 50 seconds or more so if you initiate a request in the beginning. Thus this is the reason behind it delaying at the first instance of interacting with it.
 
 # Project Nexus – Online Polling System (Frontend)
 
