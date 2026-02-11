@@ -1,5 +1,9 @@
 # Online_polling_system_frontend
 
+# Important Note.
+
+## The backend is powered on render and it stays silent or sleeps when active. Because it is being utilised in the free mode, it takes time to come back up about 50 seconds or more so if you initiate a request in the beginning and it fails then you know the reason behind it delaying
+
 # Project Nexus – Online Polling System (Frontend)
 
 A modern, secure, and scalable frontend application for the **Project Nexus Online Polling System**.  
