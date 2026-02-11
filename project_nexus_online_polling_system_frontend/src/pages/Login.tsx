@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import loginNetwork from "@/assets/login-network.jpg";
 import projectLogo from "@/assets/project-logo.png";
 
@@ -47,6 +48,8 @@ export default function Login() {
   };
 
   return (
+    <>
+    {isSubmitting && <LoadingSpinner size="lg" label="Signing in..." overlay />}
     <div className="flex min-h-screen">
       {/* Left side - illustration */}
       <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(180deg, #a8c4d8 0%, #c8dce8 50%, #dce8f0 100%)' }}>
@@ -107,6 +110,7 @@ export default function Login() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {isSubmitting ? "Signing in..." : "Login"}
             </Button>
           </form>
@@ -120,5 +124,6 @@ export default function Login() {
         </div>
       </div>
     </div>
+    </>
   );
 }

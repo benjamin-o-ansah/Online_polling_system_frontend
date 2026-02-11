@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi, AuditLog } from "@/lib/api";
-import { Skeleton } from "@/components/ui/skeleton";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -152,7 +152,7 @@ export default function AuditLogs() {
 
       {/* Table */}
       {isLoading ? (
-        <Skeleton className="h-96 w-full rounded-lg" />
+        <LoadingSpinner size="lg" label="Loading audit logs..." overlay />
       ) : (
         <div className="rounded-lg border bg-card overflow-auto">
           <Table>

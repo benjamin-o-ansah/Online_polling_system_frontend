@@ -6,6 +6,7 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isPollAdmin: boolean;
   login: (email: string, password: string) => Promise<{ role: string }>;
   register: (data: { email: string; password: string; role: string }) => Promise<void>;
   logout: () => Promise<void>;
@@ -74,6 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         isAuthenticated: !!user,
         isAdmin: user?.role === "SYSTEM_ADMIN" || user?.role === "POLL_ADMIN",
+        isPollAdmin: user?.role === "POLL_ADMIN",
         login,
         register,
         logout,
