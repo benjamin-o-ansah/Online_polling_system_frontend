@@ -37,7 +37,7 @@ const systemAdminItems = [
 ];
 
 export default function AppLayout() {
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin, isPollAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 

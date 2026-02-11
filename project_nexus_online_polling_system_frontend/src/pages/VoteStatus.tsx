@@ -4,8 +4,7 @@ import { pollsApi } from "@/lib/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { CheckCircle2, Calendar, Clock, Hash } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { format } from "date-fns";
 
 export default function VoteStatus() {
@@ -24,7 +23,7 @@ export default function VoteStatus() {
   });
 
   if (isLoading) {
-    return <div className="max-w-lg mx-auto"><Skeleton className="h-96 w-full" /></div>;
+    return <LoadingSpinner size="lg" label="Loading vote status..." overlay />;
   }
 
   if (!voteStatus?.has_voted) {
@@ -41,72 +40,73 @@ export default function VoteStatus() {
   return (
     <div className="max-w-lg mx-auto">
       <Card className="overflow-hidden">
-        <div className="bg-emerald-50 p-8 text-center">
-          <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
+        {/* Green glow header */}
+        <div className="flex flex-col items-center pt-10 pb-6 px-6">
+          <div className="h-20 w-20 rounded-full bg-gradient-to-br from-emerald-200 to-emerald-100 opacity-80 mb-5" />
           <h1 className="text-2xl font-bold text-foreground">Vote Submitted</h1>
-          <p className="text-muted-foreground mt-1">Your vote has been recorded successfully</p>
+          <p className="text-muted-foreground mt-2 text-center text-sm">
+            Your participation has been recorded. You cannot change your vote for this poll.
+          </p>
         </div>
 
-        <CardContent className="p-6 space-y-6">
+        <CardContent className="px-6 pb-8 space-y-6">
+          {/* Poll Question */}
           {poll && (
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Poll Question</p>
-              <p className="font-medium">{poll.title}</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Poll Question</p>
+              <p className="font-medium text-foreground">{poll.title}</p>
             </div>
           )}
 
+          {/* Your Selection */}
           {votedOption && (
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Your Selection</p>
-              <div className="rounded-lg border border-primary bg-primary/5 p-3">
-                <span className="font-medium text-primary">{votedOption.option_text}</span>
+            <div className="relative">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Your Selection</p>
+              <div className="rounded-lg border-2 border-primary bg-primary/5 p-4 flex items-center gap-3 relative">
+                <div className="h-5 w-5 rounded-full border-2 border-primary flex items-center justify-center shrink-0">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary" />
+                </div>
+                <span className="font-medium text-foreground">{votedOption.option_text}</span>
+                {/* Blue dot indicator */}
+                <div className="absolute -top-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-primary" />
               </div>
             </div>
           )}
 
-          <div className="border-t pt-4 space-y-3">
-            <p className="text-sm font-medium text-muted-foreground">Vote Receipt</p>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              {voteStatus.vote_id && (
-                <div className="flex items-center gap-2">
-                  <Hash className="h-3.5 w-3.5 text-muted-foreground" />
-                  <div>
-                    <p className="text-muted-foreground text-xs">Vote ID</p>
-                    <p className="font-mono text-xs">{voteStatus.vote_id}</p>
-                  </div>
-                </div>
-              )}
-              {voteStatus.voted_at && (
-                <>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                    <div>
-                      <p className="text-muted-foreground text-xs">Date</p>
-                      <p className="font-medium">{format(new Date(voteStatus.voted_at), "MMM d, yyyy")}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-                    <div>
-                      <p className="text-muted-foreground text-xs">Time</p>
-                      <p className="font-medium">{format(new Date(voteStatus.voted_at), "h:mm a")}</p>
-                    </div>
-                  </div>
-                </>
-              )}
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                <div>
-                  <p className="text-muted-foreground text-xs">Status</p>
-                  <Badge variant="outline" className="bg-emerald-50 text-emerald-700 text-xs">Verified</Badge>
-                </div>
+          {/* Vote Receipt */}
+          <div className="border-t pt-5 space-y-3">
+            {voteStatus.vote_id && (
+              <div className="flex items-center justify-between py-1">
+                <span className="text-sm text-muted-foreground">Vote ID</span>
+                <span className="text-sm font-mono font-medium">#{voteStatus.vote_id.slice(0, 8).toUpperCase()}</span>
               </div>
+            )}
+            {voteStatus.voted_at && (
+              <>
+                <div className="flex items-center justify-between py-1">
+                  <span className="text-sm text-muted-foreground">Date</span>
+                  <span className="text-sm font-medium">{format(new Date(voteStatus.voted_at), "MMM d, yyyy")}</span>
+                </div>
+                <div className="flex items-center justify-between py-1">
+                  <span className="text-sm text-muted-foreground">Time</span>
+                  <span className="text-sm font-medium">{format(new Date(voteStatus.voted_at), "h:mm a")}</span>
+                </div>
+              </>
+            )}
+            <div className="flex items-center justify-between py-1">
+              <span className="text-sm text-muted-foreground">Status</span>
+              <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs font-semibold">VERIFIED</Badge>
             </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <Button asChild className="flex-1"><Link to={`/polls/${id}/results`}>View Live Results</Link></Button>
-            <Button variant="outline" asChild className="flex-1"><Link to="/polls">Back to Polls</Link></Button>
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-3 pt-2">
+            <Button asChild className="w-full h-12 text-base font-semibold">
+              <Link to={`/polls/${id}/results`}>View Live Results</Link>
+            </Button>
+            <Button variant="outline" asChild className="w-full h-12 text-base">
+              <Link to="/polls">Back to Polls</Link>
+            </Button>
           </div>
         </CardContent>
       </Card>

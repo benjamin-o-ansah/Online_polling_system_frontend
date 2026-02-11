@@ -95,8 +95,11 @@ export const authApi = {
 
 // Polls
 export const pollsApi = {
-  list: () => {
-    return request<{ polls: ApiPoll[] }>(`/polls/`).then((res) =>
+  list: (params?: { status?: string }) => {
+    const query = new URLSearchParams();
+    if (params?.status) query.set("status", params.status);
+    const qs = query.toString();
+    return request<{ polls: ApiPoll[] }>(`/polls/${qs ? `?${qs}` : ""}`).then((res) =>
       (res.polls || (res as unknown as ApiPoll[])).map(normalizePoll)
     );
   },
@@ -135,6 +138,35 @@ export const pollsApi = {
   vote: (id: string, data: { option_id: string }) =>
     request<VoteResponse>(`/polls/${id}/vote`, { method: "POST", body: data }),
   voteStatus: (id: string) => request<VoteStatusResponse>(`/polls/${id}/vote/status`),
+};
+
+// Voter-specific endpoints
+export interface ClosedPollResult {
+  poll_id: string;
+  title: string;
+  description?: string;
+  status: string;
+  closed_at: string;
+  total_votes: number;
+  results: PollResultOption[];
+}
+
+export interface ClosedResultsResponse {
+  count: number;
+  polls: ClosedPollResult[];
+}
+
+export const voterApi = {
+  activePolls: () =>
+    request<{ polls: ApiPoll[] }>("/polls/voter/active").then((res) =>
+      (res.polls || []).map(normalizePoll)
+    ),
+  closedPolls: () =>
+    request<{ polls: ApiPoll[] }>("/polls/voter/closed").then((res) =>
+      (res.polls || []).map(normalizePoll)
+    ),
+  closedResults: () =>
+    request<ClosedResultsResponse>("/polls/closed"),
 };
 
 // Admin

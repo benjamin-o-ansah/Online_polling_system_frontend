@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Loader2 } from "lucide-react";
 
 export default function CreatePoll() {
   const { id } = useParams<{ id: string }>();
@@ -141,6 +141,7 @@ export default function CreatePoll() {
 
             <div className="flex gap-3 pt-4">
               <Button type="submit" disabled={createMutation.isPending}>
+                {createMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 {createMutation.isPending ? "Saving..." : isEdit ? "Update Poll" : "Create Poll"}
               </Button>
               <Button type="button" variant="outline" onClick={() => navigate(-1)}>Cancel</Button>

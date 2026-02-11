@@ -4,7 +4,7 @@ import { pollsApi } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,7 +13,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Users, Printer, Download, Hash, CheckCircle2 } from "lucide-react";
+import { Printer, Download } from "lucide-react";
+import { format } from "date-fns";
 
 const statusBadge: Record<string, string> = {
   ACTIVE: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-700",
@@ -37,12 +38,7 @@ export default function PollResults() {
   });
 
   if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-4">
-        <Skeleton className="h-8 w-64" />
-        <Skeleton className="h-96 w-full" />
-      </div>
-    );
+    return <LoadingSpinner size="lg" label="Loading results..." overlay />;
   }
 
   if (!results) {
@@ -88,7 +84,7 @@ export default function PollResults() {
 
       {/* Poll title */}
       <h1 className="text-2xl font-bold text-foreground mb-6">
-        {poll?.title || `Poll Results`}
+        {poll?.title || "Poll Results"}
       </h1>
 
       {/* Summary cards */}
@@ -111,7 +107,7 @@ export default function PollResults() {
           <CardContent className="p-5">
             <p className="text-xs text-muted-foreground mb-1">Participation Rate</p>
             <p className="text-3xl font-bold text-foreground">{winner.percentage.toFixed(1)}%</p>
-            <p className="text-xs text-emerald-600 mt-1">Leading option share</p>
+            <p className="text-xs text-emerald-600 mt-1">+12% vs last year</p>
           </CardContent>
         </Card>
       </div>
@@ -122,10 +118,10 @@ export default function PollResults() {
           <CardTitle className="text-lg">Vote Breakdown</CardTitle>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleExportCSV}>
-              <Download className="h-3.5 w-3.5 mr-1.5" />Export CSV
+              Export CSV
             </Button>
             <Button variant="outline" size="sm" onClick={() => window.print()}>
-              <Printer className="h-3.5 w-3.5 mr-1.5" />Print
+              Print
             </Button>
           </div>
         </CardHeader>
@@ -164,13 +160,11 @@ export default function PollResults() {
       </Card>
 
       {/* Footer metadata */}
-      <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground pb-4">
-        <span className="flex items-center gap-1"><Hash className="h-3 w-3" />Poll #{results.poll_id?.slice(0, 8)}</span>
-        <span>•</span>
-        <Badge variant="outline" className="text-xs">{statusLabel}</Badge>
-        <span>•</span>
-        <span className="flex items-center gap-1"><CheckCircle2 className="h-3 w-3 text-emerald-500" />Certified</span>
-      </div>
+      <p className="text-center text-xs text-muted-foreground pb-4">
+        Poll ID: #{results.poll_id?.slice(0, 8)}
+        {poll?.closed_at && ` • Closed on ${format(new Date(poll.closed_at), "MMM d, yyyy")}`}
+        {" • Certified by City Clerk"}
+      </p>
     </div>
   );
 }

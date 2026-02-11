@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff, Check, X, Users, Shield } from "lucide-react";
+import { Eye, EyeOff, Check, X, Users, Shield, Loader2 } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import registerCityscape from "@/assets/register-cityscape.jpg";
 import projectLogo from "@/assets/project-logo.png";
 
@@ -93,10 +94,7 @@ function RegisterRoleSelection() {
   );
 }
 
-export default function Register() {
-  const { role: roleParam } = useParams<{ role: string }>();
-  const roleConfig = roleParam ? ROLE_CONFIG[roleParam] : null;
-
+function RegisterForm({ roleConfig }: { roleConfig: { label: string; description: string; apiRole: string; icon: typeof Users } }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -105,10 +103,6 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  if (!roleConfig) {
-    return <RegisterRoleSelection />;
-  }
 
   const strength = getPasswordStrength(password);
   const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
@@ -148,6 +142,8 @@ export default function Register() {
   const RoleIcon = roleConfig.icon;
 
   return (
+    <>
+    {isSubmitting && <LoadingSpinner size="lg" label="Creating account..." overlay />}
     <div className="flex min-h-screen">
       <div className="hidden lg:flex lg:w-1/2 relative bg-primary items-center justify-center overflow-hidden">
         <img src={registerCityscape} alt="City skyline illustration" className="absolute inset-0 h-full w-full object-cover" />
@@ -244,6 +240,7 @@ export default function Register() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {isSubmitting ? "Creating account..." : `Create ${roleConfig.label} Account`}
             </Button>
           </form>
@@ -262,5 +259,17 @@ export default function Register() {
         </div>
       </div>
     </div>
+    </>
   );
+}
+
+export default function Register() {
+  const { role: roleParam } = useParams<{ role: string }>();
+  const roleConfig = roleParam ? ROLE_CONFIG[roleParam] : null;
+
+  if (!roleConfig) {
+    return <RegisterRoleSelection />;
+  }
+
+  return <RegisterForm roleConfig={roleConfig} />;
 }

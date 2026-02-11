@@ -4,6 +4,7 @@ import { adminApi, pollsApi, AuditLog } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -72,11 +73,10 @@ export default function AdminDashboard() {
   const [auditSearch, setAuditSearch] = useState("");
   const [actionFilter, setActionFilter] = useState("all");
 
-  // Poll admin: derive metrics from polls list
+  // Fetch all polls for both roles
   const { data: allPolls, isLoading: pollsLoading } = useQuery({
     queryKey: ["polls"],
     queryFn: () => pollsApi.list(),
-    enabled: !isSystemAdmin,
   });
 
   // System admin: use admin metrics endpoint
@@ -93,16 +93,33 @@ export default function AdminDashboard() {
     enabled: isSystemAdmin,
   });
 
+  // Fetch results for each poll to get accurate vote counts (for poll admin)
+  const { data: allPollResults } = useQuery({
+    queryKey: ["allPollResults", allPolls?.map((p) => p.id)],
+    queryFn: async () => {
+      if (!allPolls || allPolls.length === 0) return [];
+      const results = await Promise.all(
+        allPolls.map((p) =>
+          pollsApi.results(p.id).catch(() => ({ poll_id: p.id, total_votes: 0, status: p.status, results: [] }))
+        )
+      );
+      return results;
+    },
+    enabled: !isSystemAdmin && !!allPolls && allPolls.length > 0,
+  });
+
+  // Compute total votes: system admin uses metrics, poll admin uses fetched results
+  const computedTotalVotes = isSystemAdmin
+    ? (metrics?.votes.total ?? 0)
+    : (allPollResults?.reduce((sum, r) => sum + (r.total_votes || 0), 0) ?? 0);
+
   // Derive poll admin metrics
   const pollAdminMetrics = allPolls
     ? {
         total_polls: allPolls.length,
         active_polls: allPolls.filter((p) => p.status === "active").length,
         closed_polls: allPolls.filter((p) => p.status === "closed").length,
-        total_votes: allPolls.reduce(
-          (sum, p) => sum + p.options.reduce((s, o) => s + (o.vote_count || 0), 0),
-          0
-        ),
+        total_votes: computedTotalVotes,
       }
     : null;
 
@@ -143,7 +160,7 @@ export default function AdminDashboard() {
     URL.revokeObjectURL(url);
   };
 
-  const statsLoading = isSystemAdmin ? metricsLoading : pollsLoading;
+  const statsLoading = isSystemAdmin ? (metricsLoading || pollsLoading) : pollsLoading;
   const initials =
     user?.username?.slice(0, 2).toUpperCase() || user?.email?.slice(0, 2).toUpperCase() || "U";
 
@@ -178,11 +195,7 @@ export default function AdminDashboard() {
 
       {/* Metrics */}
       {statsLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-24 w-full" />
-          ))}
-        </div>
+        <LoadingSpinner size="lg" label="Loading dashboard..." overlay />
       ) : isSystemAdmin && metrics ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">

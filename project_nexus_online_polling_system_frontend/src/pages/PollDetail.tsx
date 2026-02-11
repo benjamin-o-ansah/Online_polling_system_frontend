@@ -9,16 +9,22 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Skeleton } from "@/components/ui/skeleton";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Clock, Edit, XCircle, Trash2 } from "lucide-react";
-import PublishPollModal from "../components/PublishPollModal";
-import ClosePollModal from "../components/ClosePollModal";
+import { ArrowLeft, Clock, Edit, XCircle, Trash2, Loader2 } from "lucide-react";
+import PublishPollModal from "@/components/PublishPollModal";
+import ClosePollModal from "@/components/ClosePollModal";
 
 const statusColors: Record<string, string> = {
   active: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-700",
   closed: "bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600",
   draft: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-700",
+};
+
+const statusLabels: Record<string, string> = {
+  active: "Active Poll",
+  closed: "Poll Closed",
+  draft: "Draft",
 };
 
 export default function PollDetail() {
@@ -68,7 +74,7 @@ export default function PollDetail() {
   });
 
   if (isLoading) {
-    return <div className="max-w-3xl mx-auto space-y-4"><Skeleton className="h-10 w-64" /><Skeleton className="h-64 w-full" /></div>;
+    return <LoadingSpinner size="lg" label="Loading poll..." overlay />;
   }
 
   if (!poll) {
@@ -88,28 +94,13 @@ export default function PollDetail() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      {/* Back link */}
-      <button
-        onClick={() => navigate("/polls")}
-        className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Dashboard
-      </button>
-
       <Card>
         <CardContent className="p-8">
-          {/* Status row */}
-          <div className="flex items-center justify-between mb-4">
+          {/* Status badge */}
+          <div className="mb-6">
             <Badge variant="outline" className={statusColors[poll.status]}>
-              {poll.status.toUpperCase()}
+              {statusLabels[poll.status] || poll.status.toUpperCase()}
             </Badge>
-            {poll.status === "active" && (
-              <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Clock className="h-3.5 w-3.5" />
-                Voting open
-              </span>
-            )}
           </div>
 
           {/* Title & description */}
@@ -126,8 +117,10 @@ export default function PollDetail() {
                   <Label
                     key={opt.id}
                     htmlFor={`opt-${opt.id}`}
-                    className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${
-                      selectedOption === String(opt.id) ? "border-primary bg-primary/5 ring-1 ring-primary" : "hover:bg-muted"
+                    className={`flex items-center gap-3 rounded-lg border-2 p-4 cursor-pointer transition-all ${
+                      selectedOption === String(opt.id)
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:bg-muted"
                     }`}
                   >
                     <RadioGroupItem value={String(opt.id)} id={`opt-${opt.id}`} />
@@ -136,11 +129,21 @@ export default function PollDetail() {
                 ))}
               </RadioGroup>
 
-              <div className="flex justify-end gap-3">
-                <Button variant="outline" onClick={() => navigate("/polls")}>Cancel</Button>
-                <Button onClick={handleVote} disabled={voteMutation.isPending}>
-                  {voteMutation.isPending ? "Submitting..." : "Submit Vote"}
-                </Button>
+              <Button
+                onClick={handleVote}
+                disabled={voteMutation.isPending}
+                className="w-full h-12 text-base font-semibold mb-6"
+              >
+                {voteMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                {voteMutation.isPending ? "Submitting..." : "Submit Vote"}
+              </Button>
+
+              {/* Secure & Anonymous notice */}
+              <div className="rounded-lg bg-muted/50 p-4">
+                <p className="text-sm font-medium text-muted-foreground">Secure & Anonymous</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Your vote is encrypted and anonymized. Project Nexus ensures that individual choices cannot be traced back to your account.
+                </p>
               </div>
             </>
           ) : hasVoted ? (
@@ -201,6 +204,11 @@ export default function PollDetail() {
           )}
         </CardContent>
       </Card>
+
+      {/* Footer */}
+      <p className="text-center text-xs text-muted-foreground mt-6">
+        Project Nexus © {new Date().getFullYear()}
+      </p>
 
       {poll && <PublishPollModal open={showPublish} onOpenChange={setShowPublish} poll={poll} />}
       {poll && <ClosePollModal open={showClose} onOpenChange={setShowClose} poll={poll} />}
