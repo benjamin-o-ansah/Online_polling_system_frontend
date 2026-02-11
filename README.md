@@ -6,6 +6,8 @@
 
 # Project Nexus – Online Polling System (Frontend)
 
+**URL**: **https://projectnexuspolling.vercel.app/**
+
 A modern, secure, and scalable frontend application for the **Project Nexus Online Polling System**.  
 This frontend consumes a RESTful backend API to enable **user authentication, poll creation, voting, results visualization, and administrative monitoring**.
 
@@ -135,7 +137,7 @@ This repository contains the **frontend application** responsible for the user i
 
 ## Project info
 
-**URL**: **https://projectnexuspolling.vercel.app/**
+
 
 **Use your preferred IDE**
 
